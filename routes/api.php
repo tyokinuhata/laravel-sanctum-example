@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\User;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+Route::get('/hello', function() {
+    return response()->json(['message' => 'hello world!']);
+});
 
 Route::post('/auth/signup', function(Request $request) {
     $validator = Validator::make($request->all(), [
@@ -54,6 +54,6 @@ Route::post('/auth/signin', function(Request $request) {
     return response()->json(['token' => $token], 200);
 });
 
-Route::get('/hello', function() {
-    return response()->json(['message' => 'hello world!']);
-});
+Route::get('/user', function (Request $request) {
+    return response()->json($request->user());
+})->middleware('auth:sanctum');
