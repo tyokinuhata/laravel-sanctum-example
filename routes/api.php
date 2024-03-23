@@ -33,6 +33,27 @@ Route::post('/auth/signup', function(Request $request) {
     return response()->json(['token' => $token], 201);
 });
 
+Route::post('/auth/signin', function(Request $request) {
+    $validator = Validator::make($request->all(), [
+        'user_id' => 'required|string|max:255',
+        'password' => 'required|string|min:8|max:255',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 400);
+    }
+
+    $user = User::where('user_id', $request->user_id)->first();
+
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $token = $user->createToken('token')->plainTextToken;
+
+    return response()->json(['token' => $token], 200);
+});
+
 Route::get('/hello', function() {
     return response()->json(['message' => 'hello world!']);
 });
